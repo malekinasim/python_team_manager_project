@@ -64,7 +64,7 @@ class Team(BasicObject):
          ,len(f"Id: {self._id}")
          ,len(f"Code: {self._code}")
          ,len(f"Team Type: {self._team_type.value}")
-         ,len(f"Fee Paid: {'YES' if self._fee_paid!=0 else 'NO'}")
+         ,len(f"Fee Paid: {'YES' if self._fee_paid else 'NO'}")
          ,len(f"Fee Amount: {self._fee_amount:.2f}")
          ,len(f"Cancel Date: {self._cancel_date if self._cancel_date else 'Active'}"),
          len(f"created at: {self._created_date}"))
@@ -77,7 +77,7 @@ class Team(BasicObject):
                 Team.format_columns(f"Name: {self._name}",
                                     f"Team Type: {self._team_type.value}",
                                     sep='\t',ljust=maximum), 
-                Team.format_columns(f"Fee Paid: {'YES' if self._fee_paid!=0 else 'NO'}", 
+                Team.format_columns(f"Fee Paid: {'YES' if self._fee_paid else 'NO'}", 
                                     f"Fee Amount: {self._fee_amount:.2f}",
                                     sep='\t',ljust=maximum), 
                 Team.format_columns(f"created at: {self._created_date}",
