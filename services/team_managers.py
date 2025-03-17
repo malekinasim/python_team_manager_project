@@ -11,15 +11,24 @@ class TeamManager(BasicManager[Team]):
         return self._storage.find_all_by_properties({
             "get_team_type":team_type
         })
-        
+    
+    def find_all_active_teams(self):
+        return self._storage.find_all_by_properties({
+            "get_cancel_date":None
+        })
+    
     def find_all_fee_paid_teams(self):
         return self._storage.find_all_by_properties({
-            "get_team_type":True
+            "get_fee_paid":True
+        })
+    def find_all_active_fee_paid_teams(self):
+        return self._storage.find_all_by_properties({
+            "get_fee_paid":True,
+            "get_cancel_date":None
         })
     
     def remove_entity(self, team_id):
         team = self._storage.find_by_id(team_id)  
-        
         if team:
             super().remove_entity(team_id)
             print(f"the team {team.get_name()} has been removed from the tournament. ")
@@ -68,9 +77,26 @@ class TeamManager(BasicManager[Team]):
         else:
             print("Team not found!")
     
-    def team_count(self):
+    def count_teams(self):
         teams=self._storage.find_all() 
         return len(teams)
     
-     
-        
+    def count_active_teams(self):
+        teams=self.find_all_active_teams() 
+        return len(teams)
+    
+    def count_fee_paid_teams(self):
+        teams=self.find_all_fee_paid_teams() 
+        return len(teams)
+    
+    def active_fee_paid_team_count(self):
+        teams=self.find_all_active_fee_paid_teams() 
+        return len(teams)
+    
+    def _show_teams_statistics(self):
+        fee_paid_team_count=self.count_fee_paid_teams()
+        active_team_count=self.count_active_teams()
+        all_team_count=self.count_teams()
+        active_fee_paid_team_count=self.active_fee_paid_team_count()
+        return all_team_count,fee_paid_team_count,active_team_count,active_fee_paid_team_count
+       
