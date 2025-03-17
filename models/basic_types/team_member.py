@@ -1,9 +1,10 @@
-from modules.enum_types.gender import Gender
-from modules.enum_types.team_role_type import TeamRoleType
-from modules.basic_type.basic_type import BasicType
+from models.enums.gender import Gender
+from models.enums.team_member_role_type import TeamMemberRoleType
+from models.basic_types.basic_type import BasicObject
 
-class TeamMember(BasicType):
+class TeamMember(BasicObject):
     def __init__(self, name, age, gender,roles):
+        super()
         self._set_name(name)
         self._set_age(age)
         self._set_gender(gender)
@@ -20,7 +21,7 @@ class TeamMember(BasicType):
         self._age = age
     
     def _set_gender(self,gender):
-        gender_type=Gender.get_by_value(gender)
+        gender_type=Gender.get_by_name(gender)
         if( gender is None):
             raise ValueError("invalid gender type for team member")
         self._gender_type=gender_type
@@ -30,12 +31,13 @@ class TeamMember(BasicType):
             raise ValueError("roles must be a non empty list")
         role_types=[]
         for role in roles:
-            role_type=TeamRoleType.get_by_value(role)
+            role_type=TeamMemberRoleType.get_by_name(role)
             if(role_type is None):
                 raise ValueError("invalid role type for team member")
             role_types.append(role_type)
             
         self._role_types=role_types
+        
         
     def get_name(self):
         return self._name

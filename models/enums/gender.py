@@ -1,4 +1,4 @@
-from modules.enum_types.enum_type import EnumType
+from models.enums.enum_type import EnumType
 class Gender(EnumType):
     FEMALE = 'female'
     MAN = 'man'

@@ -1,8 +1,9 @@
 from datetime import datetime
-from  modules.basic_type.basic_type  import BasicType
-class TeamMembershipFee(BasicType):
+from  models.basic_types.basic_type  import BasicObject
+class TeamMembershipFee(BasicObject):
 
     def __init__(self,fee_amount:0):
+        super()
         self._set_fee_amount(fee_amount)
         self._start_date=datetime.now()
         
