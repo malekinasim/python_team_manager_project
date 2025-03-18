@@ -9,7 +9,7 @@ class Team(BasicObject):
         super().__init__(code,created_date,id)
         self.set_name(name)
         self.set_type(type)
-        self._fee_paid = fee_paid
+        self._fee_paid = fee_paid if isinstance(fee_paid,bool) else False if fee_paid==0  else True
         self._fee_amount = fee_amount
         self._cancel_date=cancel_date
     
@@ -92,8 +92,8 @@ class Team(BasicObject):
         return 'teams'
     
     @staticmethod
-    def get_code_column_name():
-        return 'team_id'
+    def get_id_column_name():
+        return 'id'
     
     def code_entity(self):
         return Team.format_columns(self._id,self._code,self._name,
@@ -101,10 +101,10 @@ class Team(BasicObject):
                                    self._fee_amount,self._cancel_date,self._created_date,sep=',')
 
     @staticmethod
-    def decode_entity(str):
-        if str is None or len(str)==0:
+    def decode_entity(cod:str):
+        if cod is None or len(str)==0:
             return None
-        arr=str.split(',')
+        arr=cod.split(',')
         id=int(arr[0])
         code=arr[1]
         name=arr[2]
@@ -120,4 +120,26 @@ class Team(BasicObject):
         else:
             created_date=None
         return Team(name,team_type,code,id,fee_paid,fee_amount,cancel_date,created_date)
+    
+    
+    # @staticmethod
+    # def decode_entity(str):
+    #     if str is None or len(str)==0:
+    #         return None
+    #     arr=str.split(',')
+    #     id=int(arr[0])
+    #     code=arr[1]
+    #     name=arr[2]
+    #     team_type=arr[3]
+    #     fee_paid=False if arr[4]=='False' else True
+    #     fee_amount=float(arr[5])
+    #     if arr[6]  and arr[6]!='None' :
+    #         cancel_date=arr[6]
+    #     else:
+    #         cancel_date=None
+    #     if arr[7]  and arr[7]!='None' :
+    #         created_date=arr[7]
+    #     else:
+    #         created_date=None
+    #     return Team(name,team_type,code,id,fee_paid,fee_amount,cancel_date,created_date)
         

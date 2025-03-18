@@ -1,4 +1,5 @@
-1,TEAM-1,team_1,girl,False,0.0,None,2025-03-17 20:49:59
+[
+    1,team_1,girl,False,0.0,None,2025-03-17 20:49:59
 2,TEAM-2,team_2,boy,True,2548.0,None,2025-03-17 20:50:14
 3,TEAM-3,team_3,boy,True,0.0,2025-03-17,2025-03-17 20:50:39
 4,TEAM-4,test,girl,False,0.0,None,2025-03-17 21:11:04

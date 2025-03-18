@@ -1,13 +1,14 @@
 from utils.repositories.storage import Storage
 from typing import Generic, TypeVar
 from models.basic_types.basic_type import BasicObject
-from utils.db_util import create_connection, create_table, save_entity_by_id,update_entity_by_id,delete_entity_by_id, select_entity_by_id, select_all_entity
+from utils.db_util import create_connection,filter_entity ,create_table, save_entity as save_entity_to_db,update_entity_by_id,delete_entity_by_id, select_entity_by_id, select_all_entity
 from utils.decoders.db_record_decoder import DbRecordDecoder
 from enum import Enum
 T = TypeVar('T', bound=BasicObject)
 
 class DBStorage(Storage, Generic[T]):
     _connection = None
+    _entity_class = None
     
     @classmethod
     def _create_instance(cls, config: dict,entity_class:T):
@@ -15,7 +16,7 @@ class DBStorage(Storage, Generic[T]):
             raise Exception('''The configuration for database Storage is invalid. 
                             It is required to have a DB_NAME key in the input config
                             and a PRE_QUERY key. The PRE_QUERY key should be a :: separated string of queries or a list of strings.''')
-            
+        cls._entity_class=entity_class   
         if cls._connection is None:
             cls._connection = create_connection(dbName=config['DB_NAME'])
         
@@ -31,27 +32,36 @@ class DBStorage(Storage, Generic[T]):
     
     @classmethod
     def find_by_id(cls, id) -> T:
-        row = select_entity_by_id(cls._connection, T.get_table_name(), T.get_id_column_name(), id)
+        row = select_entity_by_id(cls._connection, cls._entity_class.get_table_name(), cls._entity_class.get_id_column_name(), id)
         if row:
-            return DbRecordDecoder[T].decode(row,T)
+            return DbRecordDecoder[T].decode(row,cls._entity_class)
         return None
 
     @classmethod
     def find_all(cls) -> list[T]:
-        rows = select_all_entity(cls._connection, T.get_table_name())
+        rows = select_all_entity(cls._connection, cls._entity_class.get_table_name())
         list=[]
         for row in rows:
-            entity=DbRecordDecoder[T].decode(row,T) 
+            entity=DbRecordDecoder[T].decode(row,cls._entity_class) 
             if(entity is not None):
                 list.append(entity)
         return list
     
     @classmethod
+    def find_all_by_properties(cls,filter: dict)->list[T]:
+        rows = filter_entity(cls._connection, cls._entity_class.get_table_name(),filter)
+        list=[]
+        for row in rows:
+            entity=DbRecordDecoder[T].decode(row,cls._entity_class) 
+            if(entity is not None):
+                list.append(entity)
+        return list
+    @classmethod
     def delete_by_id(cls, id):
-        delete_entity_by_id(cls._connection, T.get_table_name(), T.get_id_column_name(), id)
+        delete_entity_by_id(cls._connection, cls._entity_class.get_table_name(), cls._entity_class.get_id_column_name(), id)
     
     @classmethod
-    def _get_entity_attributes(data):
+    def _get_entity_attributes(cls,data):
         column_names=[]
         column_values=[]
         for field in data.__dict__.items():
@@ -71,10 +81,13 @@ class DBStorage(Storage, Generic[T]):
     @classmethod
     def update_entity(cls, data:T):
         column_names,column_values=cls._get_entity_attributes(data)
-        update_entity_by_id(cls._connection,T.get_table_name(),id,T.get_id_column_name(),column_names, column_values)
+        update_entity_by_id(cls._connection,cls._entity_class.get_table_name(),data.get_id(),cls._entity_class.get_id_column_name(),column_names, column_values)
     
     @classmethod 
     def save_entity(cls, data:T):
         column_names,column_values=cls._get_entity_attributes(data)
-        return save_entity_by_id(cls._connection,T.get_table_name(),id,T.get_id_column_name(),column_names, column_values)
+        return save_entity_to_db(cls._connection,
+                           cls._entity_class.get_table_name(),
+                           column_names, 
+                           column_values)
     

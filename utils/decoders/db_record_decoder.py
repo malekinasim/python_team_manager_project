@@ -3,22 +3,28 @@ from typing import Type,TypeVar,Generic,Union
 from models.basic_types.basic_type import BasicObject 
 
 T=TypeVar('T',bound=BasicObject)
-class DbRecordDecoder(Decoder[T,Union[tuple,dict]],Generic[T]):
+class DbRecordDecoder(Decoder[T,tuple],Generic[T]):
+    
+    # @staticmethod
+    # def _validate_data(data:tuple)-> bool:
+    #     if (data is None or len(data) == 0):
+    #         return False
+    #     return True
     
     @staticmethod
-    def _validate_data(data:Union[tuple,dict]):
-        if (data is None or len(data) == 0):
+    def _validate_data(row:Union[tuple,dict])->bool:
+        if (row is None or len(row) == 0):
             return False
         return True
     
     @staticmethod   
-    def decode(data:Union[tuple,dict],target_class:Type[T])->T:
-        if(not Decoder._validate_data(data)):
+    def decode(row:Union[tuple,dict],target_class:Type[T])->T:
+        if(not DbRecordDecoder._validate_data(row)):
             raise ValueError("not validate")
         try:
-            if(isinstance(data,tuple)):
-                return target_class(*data)
-            elif(isinstance(data,dict)):
-                return target_class(**data)
+            if(isinstance(row,tuple)):
+                return target_class(*row)
+            elif(isinstance(row,dict)):
+                return target_class(**row)
         except Exception as e:
             raise Exception(f"Error decoding string: {e}")    
