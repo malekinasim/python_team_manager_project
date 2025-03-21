@@ -1,5 +1,13 @@
-[
-    1,team_1,girl,False,0.0,None,2025-03-17 20:49:59
-2,TEAM-2,team_2,boy,True,2548.0,None,2025-03-17 20:50:14
-3,TEAM-3,team_3,boy,True,0.0,2025-03-17,2025-03-17 20:50:39
-4,TEAM-4,test,girl,False,0.0,None,2025-03-17 21:11:04
+1,TEAM-1,test_1,boy,True,987.0,None,2025-03-19 16:18:46
+2,TEAM-2,test_3,girl,False,234000.0,2025-03-19,2025-03-19 17:11:08
+3,TEAM-3,p,girl,True,456.0,None,2025-03-19 17:26:05
+4,TEAM-4,test_5,boy,True,456000.0,2025-03-19,2025-03-19 17:57:34
+6,TEAM-6,2,boy,False,0.0,None,2025-03-19 18:12:18
+7,TEAM-7,test_7,girl,True,1.0,None,2025-03-19 18:23:30
+8,TEAM-8,test_9,boy,True,1.0,None,2025-03-19 18:24:15
+9,TEAM-9,test,boy,False,0.0,None,2025-03-19 18:33:11
+10,TEAM-10,test_10,boy,False,58600.0,None,2025-03-19 18:34:24
+11,TEAM-11,test_90,girl,False,235000.0,None,2025-03-19 18:44:01
+12,TEAM-12,test,boy,False,98000.0,None,2025-03-20 03:21:35
+14,TEAM-14,teatm90,boy,False,5400.0,None,2025-03-20 21:08:22
+15,TEAM-15,team_100,boy,True,6700000.0,None,2025-03-20 22:12:49

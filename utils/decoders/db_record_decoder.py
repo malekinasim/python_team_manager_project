@@ -4,22 +4,16 @@ from models.basic_types.basic_type import BasicObject
 
 T=TypeVar('T',bound=BasicObject)
 class DbRecordDecoder(Decoder[T,tuple],Generic[T]):
-    
-    # @staticmethod
-    # def _validate_data(data:tuple)-> bool:
-    #     if (data is None or len(data) == 0):
-    #         return False
-    #     return True
-    
+        
     @staticmethod
-    def _validate_data(row:Union[tuple,dict])->bool:
+    def __validate_data(row:Union[tuple,dict])->bool:
         if (row is None or len(row) == 0):
             return False
         return True
     
     @staticmethod   
     def decode(row:Union[tuple,dict],target_class:Type[T])->T:
-        if(not DbRecordDecoder._validate_data(row)):
+        if(not DbRecordDecoder.__validate_data(row)):
             raise ValueError("not validate")
         try:
             if(isinstance(row,tuple)):

@@ -7,61 +7,61 @@ from enum import Enum
 T = TypeVar('T', bound=BasicObject)
 
 class DBStorage(Storage, Generic[T]):
-    _connection = None
-    _entity_class = None
+    __connection = None
+    __entity_class = None
     
     @classmethod
-    def _create_instance(cls, config: dict,entity_class:T):
+    def create_instance(cls, config: dict,entity_class:T):
         if 'DB_NAME' not in config or 'PRE_QUERY' not in config:
             raise Exception('''The configuration for database Storage is invalid. 
                             It is required to have a DB_NAME key in the input config
                             and a PRE_QUERY key. The PRE_QUERY key should be a :: separated string of queries or a list of strings.''')
-        cls._entity_class=entity_class   
-        if cls._connection is None:
-            cls._connection = create_connection(dbName=config['DB_NAME'])
+        cls.__entity_class=entity_class   
+        if cls.__connection is None:
+            cls.__connection = create_connection(dbName=config['DB_NAME'])
         
         # If PRE_QUERY is a string of queries separated by '::', we split it, otherwise use it as is
         if isinstance(config['PRE_QUERY'], str):
-           queryset = config['PRE_QUERY'].split('::') 
+            queryset = config['PRE_QUERY'].split('::') if '::' in config['PRE_QUERY'] else [config['PRE_QUERY']]
         else:
-           queryset =config['PRE_QUERY']
+            queryset = config['PRE_QUERY']
         
         for query in queryset:
-            create_table(cls._connection, query)
+            create_table(cls.__connection, query)
         return cls[entity_class]
     
     @classmethod
     def find_by_id(cls, id) -> T:
-        row = select_entity_by_id(cls._connection, cls._entity_class.get_table_name(), cls._entity_class.get_id_column_name(), id)
+        row = select_entity_by_id(cls.__connection, cls.__entity_class.get_table_name(), cls.__entity_class.get_id_column_name(), id)
         if row:
-            return DbRecordDecoder[T].decode(row,cls._entity_class)
+            return DbRecordDecoder[T].decode(row,cls.__entity_class)
         return None
 
     @classmethod
     def find_all(cls) -> list[T]:
-        rows = select_all_entity(cls._connection, cls._entity_class.get_table_name())
+        rows = select_all_entity(cls.__connection, cls.__entity_class.get_table_name())
         list=[]
         for row in rows:
-            entity=DbRecordDecoder[T].decode(row,cls._entity_class) 
+            entity=DbRecordDecoder[T].decode(row,cls.__entity_class) 
             if(entity is not None):
                 list.append(entity)
         return list
     
     @classmethod
     def find_all_by_properties(cls,filter: dict)->list[T]:
-        rows = filter_entity(cls._connection, cls._entity_class.get_table_name(),filter)
+        rows = filter_entity(cls.__connection, cls.__entity_class.get_table_name(),filter)
         list=[]
         for row in rows:
-            entity=DbRecordDecoder[T].decode(row,cls._entity_class) 
+            entity=DbRecordDecoder[T].decode(row,cls.__entity_class) 
             if(entity is not None):
                 list.append(entity)
         return list
     @classmethod
     def delete_by_id(cls, id):
-        delete_entity_by_id(cls._connection, cls._entity_class.get_table_name(), cls._entity_class.get_id_column_name(), id)
+        delete_entity_by_id(cls.__connection, cls.__entity_class.get_table_name(), cls.__entity_class.get_id_column_name(), id)
     
     @classmethod
-    def _get_entity_attributes(cls,data):
+    def __get_entity_attributes(cls,data):
         column_names=[]
         column_values=[]
         for field in data.__dict__.items():
@@ -80,14 +80,14 @@ class DBStorage(Storage, Generic[T]):
         return column_names,column_values
     @classmethod
     def update_entity(cls, data:T):
-        column_names,column_values=cls._get_entity_attributes(data)
-        update_entity_by_id(cls._connection,cls._entity_class.get_table_name(),data.get_id(),cls._entity_class.get_id_column_name(),column_names, column_values)
+        column_names,column_values=cls.__get_entity_attributes(data)
+        update_entity_by_id(cls.__connection,cls.__entity_class.get_table_name(),data.get_id(),cls.__entity_class.get_id_column_name(),column_names, column_values)
     
     @classmethod 
     def save_entity(cls, data:T):
-        column_names,column_values=cls._get_entity_attributes(data)
-        return save_entity_to_db(cls._connection,
-                           cls._entity_class.get_table_name(),
-                           column_names, 
-                           column_values)
+        column_names,column_values=cls.__get_entity_attributes(data)
+        return save_entity_to_db(cls.__connection,
+                        cls.__entity_class.get_table_name(),
+                        column_names, 
+                        column_values)
     

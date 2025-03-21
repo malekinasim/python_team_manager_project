@@ -75,7 +75,7 @@ def read_file(file_path):
     input_file=None
     try:
         input_file=open(file_path, 'r' )
-        return input_file.read()
+        return input_file.read().strip()
     except IOError as e:
         print(f"an error occurred when reading file {file_path}")
         print(e)

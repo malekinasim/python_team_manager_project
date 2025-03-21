@@ -3,20 +3,20 @@ import uuid
 from abc import ABC, abstractmethod
 class BasicObject(ABC):
     def __init__(self,code,created_date,id=uuid.uuid4() ): 
-        self._id=id 
-        self._set_code(code)
-        self._created_date=created_date
+        self.__id=id 
+        self.__set_code(code)
+        self.__created_date=created_date
         
-    def _set_code(self,code):
+    def __set_code(self,code):
         if(code is None):
             raise ValueError("the team name is required")   
         self._code=code
     
     def get_id(self):
-        return self._id
+        return self.__id
     
     def get_created_date(self):
-        return self._created_date
+        return self.__created_date
         
     @abstractmethod
     def code_entity(self):

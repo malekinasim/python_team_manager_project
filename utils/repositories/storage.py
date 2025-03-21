@@ -10,7 +10,7 @@ T=TypeVar("T", bound=BasicObject)
 class Storage(Generic[T]):
     
     @classmethod
-    def _create_instance(cls, config: dict,entity_class:T):
+    def create_instance(cls, config: dict,entity_class:T):
         raise NotImplementedError("Subclasses should implement this!")
   
     @classmethod 
